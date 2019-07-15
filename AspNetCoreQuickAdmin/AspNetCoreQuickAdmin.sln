@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28922.388
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCoreQuickAdmin", "AspNetCoreQuickAdmin\AspNetCoreQuickAdmin.csproj", "{2ED1F44F-6D21-4F52-AFB5-53F2BCE216AB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2ED1F44F-6D21-4F52-AFB5-53F2BCE216AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ED1F44F-6D21-4F52-AFB5-53F2BCE216AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ED1F44F-6D21-4F52-AFB5-53F2BCE216AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ED1F44F-6D21-4F52-AFB5-53F2BCE216AB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {404A469C-FB63-456D-873E-B95A8423D303}
+	EndGlobalSection
+EndGlobal
