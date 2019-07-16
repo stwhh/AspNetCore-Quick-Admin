@@ -24,5 +24,10 @@ namespace AspNetCoreQuickAdmin.JWTAuth
         /// 加密的key，必须大于16位
         /// </summary>
         public string SecretKey { get; set; }
+
+        /// <summary>
+        /// 有效期，
+        /// </summary>
+        public int ExpiresInMinute { get; set; }
     }
 }

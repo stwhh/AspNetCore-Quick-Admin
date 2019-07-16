@@ -6,6 +6,12 @@ namespace DAO
 {
     public class QuickDbContext: DbContext
     {
+
+        public QuickDbContext(DbContextOptions<QuickDbContext> options)
+            : base(options)
+        {
+        }
+
         public int TenantId { get; set; }
 
         public virtual DbSet<User> User { get; set; }

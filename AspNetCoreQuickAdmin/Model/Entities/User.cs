@@ -9,17 +9,29 @@ namespace Model.Entities
     public class User : FullAudited
     {
         [Key]
+        [StringLength(36)]
         public string Id { get; set; }
 
-        public string UserName { get; set; }
+        [Required]
+        [StringLength(100)]
+        public string UserName { get; set; } = string.Empty;
 
-        public string EnUserName { get; set; }
+        [Required]
+        [StringLength(100)]
 
-        public string Password { get; set; }
+        public string EnUserName { get; set; } = string.Empty;
 
-        public string Email { get; set; }
+        [Required]
+        [StringLength(255)]
+        public string Password { get; set; } = string.Empty;
 
-        public string Phone { get; set; }
+        [Required]
+        [StringLength(255)]
+        public string Email { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(100)]
+        public string Phone { get; set; } = string.Empty;
 
     }
 }

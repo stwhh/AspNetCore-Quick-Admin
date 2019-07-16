@@ -8,10 +8,13 @@ using AspNetCoreQuickAdmin.JWTAuth;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Integration.WebApi;
+using Common.Log;
 using DAO;
+using DAO.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +23,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Model.Entities;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace AspNetCoreQuickAdmin
@@ -36,9 +40,12 @@ namespace AspNetCoreQuickAdmin
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            var jwtSetting = Configuration.GetSection("JwtSettings");
+            services.Configure<JwtSetting>(jwtSetting);
+
             services.AddMvc(options =>
             {
-                options.Filters.Add<AuditLogActionFilter>();
+                options.Filters.Add<AuditLogActionFilter>(); //审计日志
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             var dbType = Configuration.GetValue<string>("DataBaseType").ToLower();
@@ -53,6 +60,16 @@ namespace AspNetCoreQuickAdmin
                 services.AddDbContextPool<QuickDbContext>(
                     options => { options.UseMySql(Configuration.GetConnectionString("MySql")); });
             }
+
+            //注入HttpContext服务，否则用不了HttpContextAccessor
+            services.AddHttpContextAccessor();
+
+            //其它反向代理服务器 启用转接头,保证可以正确获取客户端的信息
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
 
             //注册Swagger生成器，定义一个和多个Swagger 文档
             services.AddSwaggerGen(c =>
@@ -93,16 +110,17 @@ namespace AspNetCoreQuickAdmin
 
             //添加 Autofac
             var builder = new ContainerBuilder();
-            builder.Populate(services);
             #region 注册services
 
-            //builder.RegisterGeneric(typeof(BaseRepository<>)).As(typeof(IBaseRepository<>));
             var assemblies = AppDomain.CurrentDomain.GetAssemblies().ToArray();
             builder.RegisterAssemblyTypes(assemblies).Where(t => t.Name.EndsWith("Service")) //注册Services
                 .AsImplementedInterfaces();
             //属性注入 ，后台可用属性自动注入，不需要构造函数注入了
-            builder.RegisterApiControllers(assemblies).PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
-           
+            //builder.RegisterApiControllers(assemblies).PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
+
+            builder.RegisterGeneric(typeof(QuickAdminRepository<>)).As(typeof(IQuickAdminRepository<>)).InstancePerLifetimeScope();
+            builder.RegisterType<LogHelper>().As<ILogHelper>().SingleInstance();
+            builder.Populate(services);
             #endregion
 
             var container = builder.Build();
@@ -140,6 +158,8 @@ namespace AspNetCoreQuickAdmin
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
+            //启用认证
+            app.UseAuthentication();
 
             app.UseHttpsRedirection();
 

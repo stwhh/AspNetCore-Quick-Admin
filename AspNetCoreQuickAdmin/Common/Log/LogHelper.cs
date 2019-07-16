@@ -72,20 +72,20 @@ namespace Common.Log
             var entity = new AuditLog()
             {
                 Type = model.LogType,
-                RequestUrl = model.RequestUrl,
-                RequestParam = model.RequestParam,
-                ResponseParam = model.ResponseParam,
-                ServiceName = model.ServiceName,
-                ActionName = model.ActionName,
-                Ip = model.IpAddr,
-                UserAgent = model.UserAgent,
+                RequestUrl = model.RequestUrl ?? string.Empty,
+                RequestParam = model.RequestParam ?? string.Empty,
+                ResponseParam = model.ResponseParam ?? string.Empty,
+                ServiceName = model.ServiceName ?? string.Empty,
+                ActionName = model.ActionName ?? string.Empty,
+                Ip = model.IpAddr ?? string.Empty,
+                UserAgent = model.UserAgent ?? string.Empty,
                 Duration = model.DurationTimeOfMillisecond,
-                ExceptionContent = exceptionContent.Length > LogContentMaxLength
-                    ? exceptionContent.Substring(0, LogContentMaxLength)
-                    : exceptionContent,
-                Description = model.ExtraContent,
+                ExceptionContent = (exceptionContent.Length > LogContentMaxLength
+                                       ? exceptionContent.Substring(0, LogContentMaxLength)
+                                       : exceptionContent) ?? string.Empty,
+                Description = model.ExtraContent ?? string.Empty,
                 CreateTime = model.RequestTime,
-                CreateUserId = model.UserName
+                CreateUserId = model.UserName ?? string.Empty
             };
             return entity;
         }
