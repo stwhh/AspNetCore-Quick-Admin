@@ -6,11 +6,15 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AspNetCoreQuickAdmin.JWTAuth;
+using Common;
+using DAO.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Model.DTO;
+using Model.Entities;
 
 namespace AspNetCoreQuickAdmin.Controllers
 {
@@ -19,36 +23,48 @@ namespace AspNetCoreQuickAdmin.Controllers
     public class AuthorizeController : ControllerBase
     {
 
+        private readonly IConfiguration _configuration;
         private JwtSetting _jwtSettings;
+        private readonly IQuickAdminRepository<User> _userRepository;
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="_jwtSetting">jwt认证配置</param>
-        public AuthorizeController(IOptions<JwtSetting> _jwtSetting)
+        /// <param name="configuration"></param>
+        /// <param name="jwtSetting">jwt认证配置</param>
+        /// <param name="userRepository"></param>
+        public AuthorizeController(IConfiguration configuration,
+            IOptions<JwtSetting> jwtSetting,
+            IQuickAdminRepository<User> userRepository)
         {
-            _jwtSettings = _jwtSetting.Value;
+            _configuration = configuration;
+            _jwtSettings = jwtSetting.Value;
+            _userRepository = userRepository;
         }
 
         [Route("Token")]
         [HttpPost]
-        public IActionResult Token([FromBody] LoginInInput input)
+        public async Task<IActionResult> Token([FromBody] LoginInput input)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            if (!(input.UserName == "stwhh" && input.Password == "123456")) //todo-stwhh 判断账号密码是否正确
+            var user = await _userRepository
+                .GetEntityAsync(x => x.UserName == input.UserName
+                                   && x.Password == EncryptHelper.AesEncrypt(_configuration["EncryptionKey"],input.Password));
+            if (user==null)
             {
                 return BadRequest();
             }
-
+            //这里可自定义申明信息，生成的token登录后可以获取到Claim信息
             var claim = new Claim[]
             {
-                new Claim("name", "stwhh"), //ClaimTypes.Name
-                new Claim("userNo", "0001"), //这里可自定义申明信息，生成的token登录后可以获取到Claim信息
-                new Claim("role", "admin"),
+                new Claim(ClaimTypes.NameIdentifier, user.Id), //ClaimTypes.Name
+                new Claim("name", user.UserName), //ClaimTypes.Name
+                new Claim("userNo", "0001"), //todo-stwhh 需要根据自己需要修改
+                new Claim("role", "admin"), //
                 new Claim("email", "admin@qq.com")
             };
 

@@ -1,29 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using AspNetCoreQuickAdmin.Common;
 using AspNetCoreQuickAdmin.Common.Filters;
 using AspNetCoreQuickAdmin.JWTAuth;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Autofac.Integration.WebApi;
+using Common;
 using Common.Log;
 using DAO;
 using DAO.Repository;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using Model.Entities;
+using Services.Imp;
+using Services.Interface;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace AspNetCoreQuickAdmin
@@ -42,7 +39,6 @@ namespace AspNetCoreQuickAdmin
         {
             var jwtSetting = Configuration.GetSection("JwtSettings");
             services.Configure<JwtSetting>(jwtSetting);
-
             services.AddMvc(options =>
             {
                 options.Filters.Add<AuditLogActionFilter>(); //审计日志
@@ -108,21 +104,25 @@ namespace AspNetCoreQuickAdmin
             //添加JWT认证
             services.AddJwtAuthentication(Configuration);
 
+
             //添加 Autofac
             var builder = new ContainerBuilder();
+
             #region 注册services
-
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies().ToArray();
-            builder.RegisterAssemblyTypes(assemblies).Where(t => t.Name.EndsWith("Service")) //注册Services
+            //var assemblies = AppDomain.CurrentDomain.GetAssemblies().ToArray(); Assembly.GetExecutingAssembly();
+            builder.RegisterAssemblyTypes(Assembly.Load("Services"))
+                .PublicOnly()
+                .Where(t => t.Name.EndsWith("Service"))
                 .AsImplementedInterfaces();
-            //属性注入 ，后台可用属性自动注入，不需要构造函数注入了
-            //builder.RegisterApiControllers(assemblies).PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
 
+            //注入仓储
             builder.RegisterGeneric(typeof(QuickAdminRepository<>)).As(typeof(IQuickAdminRepository<>)).InstancePerLifetimeScope();
             builder.RegisterType<LogHelper>().As<ILogHelper>().SingleInstance();
-            builder.Populate(services);
-            #endregion
+            //builder.RegisterType<UserService>().As<IUserService>();
+            builder.RegisterType<CommonHelper>();
 
+            #endregion
+            builder.Populate(services);
             var container = builder.Build();
             return new AutofacServiceProvider(container);
         }

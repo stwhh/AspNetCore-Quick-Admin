@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using Common.Log;
 using Microsoft.AspNetCore.Http;
@@ -53,7 +54,7 @@ namespace AspNetCoreQuickAdmin.Common.Filters
         }
 
         /// <summary>
-        /// 是否忽略，比如查看日志的操作没必要记录，否则响应参数会一层层签套
+        /// 是否忽略，比如查看日志的操作没必要记录，否则响应参数会一层层嵌套
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
@@ -76,7 +77,16 @@ namespace AspNetCoreQuickAdmin.Common.Filters
 
             _logModel.LogType = logType;
             //_logModel.UserName = _accessor.HttpContext.User.Identity.Name;
-            _logModel.UserName = _accessor.HttpContext.User.FindFirst("userNo")?.Value;
+            //var allClaims = _accessor.HttpContext.User.Claims;
+            //生成token用的Claim信息会加在token Payload里，这里都可以获取到
+            var userName = _accessor.HttpContext.User.FindFirst("name")?.Value;
+            var userNo = _accessor.HttpContext.User.FindFirst("userNo")?.Value;
+            var role = _accessor.HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            var email = _accessor.HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            var issuer = _accessor.HttpContext.User.FindFirst("iss")?.Value;
+            var audience = _accessor.HttpContext.User.FindFirst("aud")?.Value;
+
+            _logModel.UserName = userName;
             _logModel.RequestUrl = request.GetDisplayUrl();
             _logModel.ServiceName = context.RouteData.Values["Controller"].ToString();
             _logModel.ActionName = context.RouteData.Values["Action"].ToString();

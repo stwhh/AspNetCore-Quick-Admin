@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Common;
 using DAO;
 using DAO.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Model.DTO;
 using Model.Entities;
+using Services.Interface;
 
 namespace AspNetCoreQuickAdmin.Controllers
 {
@@ -16,22 +19,34 @@ namespace AspNetCoreQuickAdmin.Controllers
     [Authorize]
     public class UserController : ControllerBase
     {
-        private readonly IQuickAdminRepository<User> _userRepository;
-        private readonly QuickDbContext _context;
+        //直接注入QuickDbContext或者IQuickAdminRepository<User>仓储，
+        //或者直接注入IUserService，IUserService里面会注入仓储
 
-        public UserController(IQuickAdminRepository<User> userRepository,
-            QuickDbContext context)
+        //private readonly QuickDbContext _dbContext;
+        private readonly IQuickAdminRepository<User> _userRepository;
+        private readonly IUserService _userService;
+
+        public UserController(IUserService userService,
+            IQuickAdminRepository<User> userRepository,
+            CommonHelper commonHelper)
         {
+            _userService = userService;
             _userRepository = userRepository;
-            _context = context;
         }
 
         [HttpGet]
-        [Route("getUser/{userId}")]
-        public async Task<IActionResult> GetUser(string userId)
+        [Route("getUser")]
+        public async Task<IActionResult> GetUser([FromQuery]GetUserInput input)
         {
-            var user = _userRepository.GetEntityAsync(x => x.Id == userId);
-            return new JsonResult(await user);
+            return new JsonResult(await _userService.GetUserById(input));
+        }
+
+
+        [HttpPost]
+        [Route("AddUser")]
+        public async Task<IActionResult> AddUser([FromBody]AddUserInput input)
+        {
+            return new JsonResult(await _userService.AddUser(input));
         }
 
         [HttpGet]
@@ -40,36 +55,6 @@ namespace AspNetCoreQuickAdmin.Controllers
         {
             var user = _userRepository.GetListAsync(x => 2 > 1);
             return new JsonResult(await user);
-        }
-
-        [HttpPost]
-        [Route("Test")]
-        public IActionResult Test()
-        {
-            var userList = new List<User>()
-            {
-                new User()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    UserName = "孙涛测试1",
-                    EnUserName = "stwhh1"
-                },
-                new User()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    UserName = "孙涛测试2",
-                    EnUserName = "stwhh2"
-                },
-                new User()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    UserName = "孙涛测试3",
-                    EnUserName = "stwhh3"
-                },
-            };
-            _context.User.AddRange(userList);
-            var result = _context.SaveChanges();
-            return new ContentResult() {Content = result > 0 ? "新增成功" : "新增失败"};
         }
     }
 }
