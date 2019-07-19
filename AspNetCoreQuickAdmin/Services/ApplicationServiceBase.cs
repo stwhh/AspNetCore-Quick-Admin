@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using DAO;
 using DAO.Repository;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Model;
@@ -15,16 +16,18 @@ namespace Services
     public class ApplicationServiceBase
     {
         protected readonly IConfiguration Configuration;
+        protected readonly IHostingEnvironment HostingEnvironment;
         protected readonly IHttpContextAccessor HttpContextAccessor;
         protected readonly QuickDbContext DbContext;
 
         public ApplicationServiceBase(
             IConfiguration configuration,
+            IHostingEnvironment hostingEnvironment,
             IHttpContextAccessor httpContextAccessor,
-            QuickDbContext dbContext
-        )
+            QuickDbContext dbContext)
         {
             Configuration = configuration;
+            HostingEnvironment = hostingEnvironment;
             HttpContextAccessor = httpContextAccessor;
             DbContext = dbContext;
         }

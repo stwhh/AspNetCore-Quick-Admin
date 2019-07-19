@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Common;
 using DAO;
 using DAO.Repository;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,11 +19,13 @@ namespace Services.Imp
     public class UserService : ApplicationServiceBase, IUserService
     {
         private readonly IQuickAdminRepository<User> _userRepository;
-        public UserService(IConfiguration configuration, 
+
+        public UserService(IConfiguration configuration,
+            IHostingEnvironment hostingEnvironment,
             IHttpContextAccessor httpContextAccessor,
             QuickDbContext dbContext,
             IQuickAdminRepository<User> userRepository)
-            : base(configuration, httpContextAccessor, dbContext)
+            : base(configuration, hostingEnvironment, httpContextAccessor, dbContext)
         {
             _userRepository = userRepository;
         }
