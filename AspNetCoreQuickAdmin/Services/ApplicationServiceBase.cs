@@ -35,7 +35,7 @@ namespace Services
         protected ApplicationUser CurrentUser =>
             new ApplicationUser()
             {
-                Id = HttpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                Id = HttpContextAccessor.HttpContext.User.FindFirst("id")?.Value,
                 UserName = HttpContextAccessor.HttpContext.User.FindFirst("name")?.Value,
                 UserNo = HttpContextAccessor.HttpContext.User.FindFirst("userNo")?.Value
             };

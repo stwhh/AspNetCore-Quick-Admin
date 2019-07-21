@@ -27,21 +27,29 @@ namespace AspNetCoreQuickAdmin
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private const string _defaultCorsPolicyName = "localhost";
+
+        public Startup(IConfiguration configuration,IHostingEnvironment hostingEnvironment)
         {
             Configuration = configuration;
+            HostingEnvironment = hostingEnvironment;
         }
 
         public IConfiguration Configuration { get; }
+        public IHostingEnvironment HostingEnvironment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             var jwtSetting = Configuration.GetSection("JwtSettings");
             services.Configure<JwtSetting>(jwtSetting);
+
             services.AddMvc(options =>
             {
-                options.Filters.Add<AuditLogActionFilter>(); //审计日志
+                if (HostingEnvironment.IsProduction())
+                {
+                    options.Filters.Add<AuditLogActionFilter>(); //生产环境启用审计日志
+                }
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             var dbType = Configuration.GetValue<string>("DataBaseType").ToLower();
@@ -66,13 +74,31 @@ namespace AspNetCoreQuickAdmin
                 options.ForwardedHeaders =
                     ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
+           
+            // Configure CORS for web application
+            services.AddCors(
+                options => options.AddPolicy(
+                    _defaultCorsPolicyName,
+                    corsBuilder => corsBuilder
+                        .WithOrigins( // App:CorsOrigins in appsettings.json can contain more than one address separated by comma.
+                            Configuration["App:CorsOrigins"]
+                                .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                                .Select(o => o)
+                                .ToArray()
+                        )
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials()
+                )
+            );
 
             //注册Swagger生成器，定义一个和多个Swagger 文档
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info
                 {
-                    Title = "My Demo API", Version = "v1" ,
+                    Title = "My Demo API",
+                    Version = "v1",
                     Contact = new Contact
                     {
                         Name = "Thomson Sun",
@@ -106,24 +132,24 @@ namespace AspNetCoreQuickAdmin
 
 
             //添加 Autofac
-            var builder = new ContainerBuilder();
+            var containerBuilder = new ContainerBuilder();
 
             #region 注册services
             //var assemblies = AppDomain.CurrentDomain.GetAssemblies().ToArray(); Assembly.GetExecutingAssembly();
-            builder.RegisterAssemblyTypes(Assembly.Load("Services"))
+            containerBuilder.RegisterAssemblyTypes(Assembly.Load("Services"))
                 .PublicOnly()
                 .Where(t => t.Name.EndsWith("Service"))
                 .AsImplementedInterfaces();
 
             //注入仓储
-            builder.RegisterGeneric(typeof(QuickAdminRepository<>)).As(typeof(IQuickAdminRepository<>)).InstancePerLifetimeScope();
-            builder.RegisterType<LogHelper>().As<ILogHelper>().SingleInstance();
+            containerBuilder.RegisterGeneric(typeof(QuickAdminRepository<>)).As(typeof(IQuickAdminRepository<>)).InstancePerLifetimeScope();
+            containerBuilder.RegisterType<LogHelper>().As<ILogHelper>().SingleInstance();
             //builder.RegisterType<UserService>().As<IUserService>();
-            builder.RegisterType<CommonHelper>();
+            containerBuilder.RegisterType<CommonHelper>();
 
             #endregion
-            builder.Populate(services);
-            var container = builder.Build();
+            containerBuilder.Populate(services);
+            var container = containerBuilder.Build();
             return new AutofacServiceProvider(container);
         }
 
@@ -141,11 +167,12 @@ namespace AspNetCoreQuickAdmin
             }
 
             //跨域设置
+            //app.UseCors(_defaultCorsPolicyName); // 如果限制跨域，启用这句
             app.UseCors(policy =>
             {
+                policy.AllowAnyOrigin(); //允许所有来源地址访问
                 policy.AllowAnyHeader(); //WithHeaders
                 policy.AllowAnyMethod();
-                policy.AllowAnyOrigin();
                 policy.AllowCredentials();
                 policy.WithExposedHeaders("token"); //跨域时允许自定义响应头暴露出来，否则前端无法获取token，而且不能为空，否则也取不到
             });

@@ -61,11 +61,11 @@ namespace AspNetCoreQuickAdmin.Controllers
             //这里可自定义申明信息，生成的token登录后可以获取到Claim信息
             var claim = new Claim[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id), //ClaimTypes.Name
+                new Claim("id", user.Id), //ClaimTypes.NameIdentifier
                 new Claim("name", user.UserName), //ClaimTypes.Name
                 new Claim("userNo", "0001"), //todo-stwhh 需要根据自己需要修改
-                new Claim("role", "admin"), //
-                new Claim("email", "admin@qq.com")
+                //new Claim("role", "admin"), //
+                //new Claim("email", "admin@qq.com")
             };
 
             //对称秘钥
