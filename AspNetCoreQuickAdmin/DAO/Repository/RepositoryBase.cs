@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Linq.Dynamic;
+using System.Linq.Dynamic.Core; //可实现动态查询：https://github.com/StefH/System.Linq.Dynamic.Core 
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -335,7 +335,7 @@ namespace DAO.Repository
         {
             var list = GetList(whereExpression);
             totalRecord = list.Count();
-            list = list.OrderBy(orderBy) //System.Linq.Dynamic 命名空间下的; //需要通过nuget安装
+            list = list.OrderBy(orderBy) //System.Linq.Dynamic.Core 命名空间下的; //需要通过nuget安装
                 .Skip<T>((pageIndex - 1) * pageSize).Take<T>(pageSize)
                 .Take<T>(pageSize);
             return list;
