@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace DAO.Migrations
+namespace QuickAdmin.DAO.Migrations
 {
-    public partial class init : Migration
+    public partial class QuickAdminInit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

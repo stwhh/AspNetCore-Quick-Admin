@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-using Model.Entities.Interface;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Model.Entities
+namespace QuickAdmin.Model.Entities
 {
     public class User : FullAudited
     {

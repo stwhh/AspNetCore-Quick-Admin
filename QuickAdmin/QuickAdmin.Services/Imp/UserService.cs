@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Common;
-using DAO;
-using DAO.Repository;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Model.DTO;
-using Model.Entities;
-using Services.Interface;
+using QuickAdmin.Common;
+using QuickAdmin.DAO;
+using QuickAdmin.DAO.Repository;
+using QuickAdmin.Model.DTO;
+using QuickAdmin.Model.Entities;
+using QuickAdmin.Services.Interface;
 
-namespace Services.Imp
+namespace QuickAdmin.Services.Imp
 {
     public class UserService : ApplicationServiceBase, IUserService
     {

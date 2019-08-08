@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using DAO;
-using DAO.Repository;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Model;
-using Model.Entities;
+using QuickAdmin.DAO;
+using QuickAdmin.Model;
+using QuickAdmin.Model.Entities;
 
-namespace Services
+namespace QuickAdmin.Services
 {
     public class ApplicationServiceBase
     {
