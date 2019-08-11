@@ -1,8 +1,7 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Model.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using QuickAdmin.Model.Entities;
 
-namespace DAO
+namespace QuickAdmin.DAO
 {
     public class QuickAdminDbContext: DbContext
     {

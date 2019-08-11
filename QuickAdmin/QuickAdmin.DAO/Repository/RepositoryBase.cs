@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
+using System.Linq.Dynamic.Core;//可实现动态查询：https://github.com/StefH/System.Linq.Dynamic.Core 
 using System.Linq.Expressions;
-using System.Linq.Dynamic.Core; //可实现动态查询：https://github.com/StefH/System.Linq.Dynamic.Core 
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace DAO.Repository
+
+namespace QuickAdmin.DAO.Repository
 {
     public class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {

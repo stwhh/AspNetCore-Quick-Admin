@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
-using Model.Entities.Interface;
+using QuickAdmin.Model.Entities.Interface;
 
-namespace Model.Entities
+namespace QuickAdmin.Model.Entities
 {
     public class FullAudited : IFullAudited
     {

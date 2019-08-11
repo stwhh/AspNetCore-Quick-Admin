@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using DAO;
-using DAO.Repository;
-using Model.Entities;
+﻿using System.Threading.Tasks;
+using QuickAdmin.DAO;
+using QuickAdmin.DAO.Repository;
+using QuickAdmin.Model.Entities;
 
-namespace Common.Log
+namespace QuickAdmin.Common.Log
 {
     public class LogHelper : ILogHelper
     {

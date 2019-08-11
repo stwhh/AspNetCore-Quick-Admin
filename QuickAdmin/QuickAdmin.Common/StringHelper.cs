@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Common
+namespace QuickAdmin.Common
 {
     /// <summary>
     /// 数据类型转换

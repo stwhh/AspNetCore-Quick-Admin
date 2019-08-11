@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DAO.Repository
+﻿namespace QuickAdmin.DAO.Repository
 {
     /// <summary>
     /// 自定义仓储接口，有需要新的方法在里面实现

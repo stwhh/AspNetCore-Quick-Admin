@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using Common.Log;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http.Internal;
@@ -12,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
-using Common;
+using QuickAdmin.Common.Log;
 
 namespace QuickAdmin.Common.Filters
 {

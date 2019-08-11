@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Model.Entities.Interface
+namespace QuickAdmin.Model.Entities.Interface
 {
     public interface IModifyAudited
     {

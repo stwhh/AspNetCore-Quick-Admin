@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace Common
+namespace QuickAdmin.Common
 {
     /// <summary>
     /// 重写默认比较器

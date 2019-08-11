@@ -8,10 +8,6 @@ using QuickAdmin.Common.Filters;
 using QuickAdmin.JWTAuth;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Common;
-using Common.Log;
-using DAO;
-using DAO.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -19,15 +15,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Services.Imp;
-using Services.Interface;
+using QuickAdmin.Common.Log;
+using QuickAdmin.DAO;
+using QuickAdmin.DAO.Repository;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace QuickAdmin
 {
     public class Startup
     {
-        private const string _defaultCorsPolicyName = "localhost";
+        private const string DefaultCorsPolicyName = "localhost";
 
         public Startup(IConfiguration configuration,IHostingEnvironment hostingEnvironment)
         {
@@ -78,7 +75,7 @@ namespace QuickAdmin
             // Configure CORS for web application
             services.AddCors(
                 options => options.AddPolicy(
-                    _defaultCorsPolicyName,
+                    DefaultCorsPolicyName,
                     corsBuilder => corsBuilder
                         .WithOrigins( // App:CorsOrigins in appsettings.json can contain more than one address separated by comma.
                             Configuration["App:CorsOrigins"]

@@ -6,15 +6,15 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using QuickAdmin.JWTAuth;
-using Common;
-using DAO.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Model.DTO;
-using Model.Entities;
+using QuickAdmin.Common;
+using QuickAdmin.DAO.Repository;
+using QuickAdmin.Model.DTO;
+using QuickAdmin.Model.Entities;
 
 namespace QuickAdmin.Controllers
 {
