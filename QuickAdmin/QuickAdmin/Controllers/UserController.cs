@@ -35,7 +35,7 @@ namespace QuickAdmin.Controllers
         }
 
         [HttpGet]
-        [Route("getUser")]
+        [Route("GetUser")]
         public async Task<IActionResult> GetUser([FromQuery]GetUserInput input)
         {
             return new JsonResult(await _userService.GetUserById(input));
