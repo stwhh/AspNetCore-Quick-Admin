@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\netcoreapp2.2\Swagger.xml</DocumentationFile>
-    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>bin\Debug\SwaggerDemo.xml</DocumentationFile>
+    <OutputPath>bin\Debug\</OutputPath>
     <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
 

@@ -33,6 +33,11 @@ namespace QuickAdmin.Controllers
             _userRepository = userRepository;
         }
 
+        /// <summary>
+        /// 查询用户
+        /// </summary>
+        /// <param name="input">查询条件</param>
+        /// <returns></returns>
         [HttpGet]
         [Route("GetUser")]
         public async Task<IActionResult> GetUser([FromQuery]GetUserInput input)
@@ -40,7 +45,11 @@ namespace QuickAdmin.Controllers
             return new JsonResult(await _userService.GetUserById(input));
         }
 
-
+        /// <summary>
+        /// 新增用户
+        /// </summary>
+        /// <param name="input">新增的用户信息参数</param>
+        /// <returns></returns>
         [HttpPost]
         [Route("AddUser")]
         [AllowAnonymous] //todo 正式开发时需要去掉
@@ -49,6 +58,10 @@ namespace QuickAdmin.Controllers
             return new JsonResult(await _userService.AddUser(input));
         }
 
+        /// <summary>
+        /// 查询所有用户
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("GetUsers")]
         public async Task<IActionResult> GetUsers()

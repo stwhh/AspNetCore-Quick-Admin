@@ -19,6 +19,7 @@ using QuickAdmin.Common.Log;
 using QuickAdmin.DAO;
 using QuickAdmin.DAO.Repository;
 using Swashbuckle.AspNetCore.Swagger;
+using System.IO;
 
 namespace QuickAdmin
 {
@@ -122,6 +123,10 @@ namespace QuickAdmin
                 {
                     {"Bearer", Enumerable.Empty<string>()}
                 });
+
+                var basePath = Path.GetDirectoryName(typeof(Program).Assembly.Location);
+                var xmlPath = Path.Combine(basePath, "SwaggerDemo.xml");
+                c.IncludeXmlComments(xmlPath);
             });
 
             //添加JWT认证
