@@ -87,6 +87,7 @@ namespace QuickAdmin
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials()
+                        .WithExposedHeaders("Content-Disposition") //响应头暴露Content-Disposition标识, Return File(ms,"",fileName) 设置的文件名才可以被前端获取到
                 )
             );
 
@@ -177,6 +178,7 @@ namespace QuickAdmin
                 policy.AllowAnyHeader(); //WithHeaders
                 policy.AllowAnyMethod();
                 policy.AllowCredentials();
+                policy.WithExposedHeaders("Content-Disposition"); //响应头暴露Content-Disposition标识, Return File(ms,"",fileName) 设置的文件名才可以被前端获取到
                 policy.WithExposedHeaders("token"); //跨域时允许自定义响应头暴露出来，否则前端无法获取token，而且不能为空，否则也取不到
             });
 
