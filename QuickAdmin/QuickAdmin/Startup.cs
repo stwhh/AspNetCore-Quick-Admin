@@ -20,6 +20,8 @@ using QuickAdmin.DAO;
 using QuickAdmin.DAO.Repository;
 using Swashbuckle.AspNetCore.Swagger;
 using System.IO;
+using QuickAdmin.Services.Imp;
+using QuickAdmin.Services.Interface;
 
 namespace QuickAdmin
 {
@@ -151,7 +153,7 @@ namespace QuickAdmin
             //注入仓储
             containerBuilder.RegisterGeneric(typeof(QuickAdminRepository<>)).As(typeof(IQuickAdminRepository<>)).InstancePerLifetimeScope();
             containerBuilder.RegisterType<LogHelper>().As<ILogHelper>().SingleInstance();
-            //builder.RegisterType<UserService>().As<IUserService>();
+            //containerBuilder.RegisterType<UserService>().As<IUserService>();
             containerBuilder.RegisterType<CommonHelper>();
 
             #endregion
