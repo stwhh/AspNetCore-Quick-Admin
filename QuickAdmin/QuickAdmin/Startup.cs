@@ -48,7 +48,10 @@ namespace QuickAdmin
                 {
                     options.Filters.Add<AuditLogActionFilter>(); //生产环境启用审计日志
                 }
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                //解决序列化首字母小写的问题
+                .AddJsonOptions(options => { options.SerializerSettings.ContractResolver = 
+                    new Newtonsoft.Json.Serialization.DefaultContractResolver(); }) ;
 
             var dbType = Configuration.GetValue<string>("DataBaseType").ToLower();
             if (dbType == DbTypeEnum.SqlServer.ToString().ToLower())
