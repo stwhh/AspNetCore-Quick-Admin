@@ -26,7 +26,7 @@ namespace QuickAdmin.Services.Imp
             _userRepository = userRepository;
         }
 
-        public async Task<AddUserOutput> AddUser(AddUserInput input)
+        public async Task<AddUserOutput> AddUserAsync(AddUserInput input)
         {
             var user = new User()
             {

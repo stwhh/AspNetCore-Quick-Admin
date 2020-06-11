@@ -3,6 +3,11 @@
     public class AddUserInput
     {
         /// <summary>
+        /// 用户Id,修改用
+        /// </summary>
+        public string Id { get; set; }    
+        
+        /// <summary>
         /// 用户名称
         /// </summary>
         public string UserName { get; set; }
