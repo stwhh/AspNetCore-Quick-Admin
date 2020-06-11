@@ -127,9 +127,9 @@ namespace QuickAdmin.Common.Filters
                 return;
             }
 
-            if (context.Result is ObjectResult)
+            if (context.Result is JsonResult) //ObjectResult
             {
-                _logModel.ResponseParam = JsonConvert.SerializeObject(((ObjectResult) context.Result).Value);
+                _logModel.ResponseParam = JsonConvert.SerializeObject(((JsonResult) context.Result).Value);
             }
 
             _timer.Stop();

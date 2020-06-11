@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using QuickAdmin.DAO;
 using QuickAdmin.DAO.Repository;
 using QuickAdmin.Model.Entities;
@@ -67,6 +68,7 @@ namespace QuickAdmin.Common.Log
             var exceptionContent = model.Exception?.Message + model.Exception?.StackTrace;
             var entity = new AuditLog()
             {
+                Id = Guid.NewGuid().ToString(),
                 Type = model.LogType,
                 RequestUrl = model.RequestUrl ?? string.Empty,
                 RequestParam = model.RequestParam ?? string.Empty,
