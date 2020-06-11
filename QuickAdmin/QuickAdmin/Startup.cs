@@ -11,7 +11,6 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +21,10 @@ using Swashbuckle.AspNetCore.Swagger;
 using System.IO;
 using QuickAdmin.Services.Imp;
 using QuickAdmin.Services.Interface;
+using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json.Converters;
+using Microsoft.OpenApi.Models;
 
 namespace QuickAdmin
 {
@@ -29,31 +32,36 @@ namespace QuickAdmin
     {
         private const string DefaultCorsPolicyName = "localhost";
 
-        public Startup(IConfiguration configuration,IHostingEnvironment hostingEnvironment)
+        public Startup(IConfiguration configuration, IWebHostEnvironment hostingEnvironment)
         {
             Configuration = configuration;
             HostingEnvironment = hostingEnvironment;
         }
 
         public IConfiguration Configuration { get; }
-        public IHostingEnvironment HostingEnvironment { get; }
+        public IWebHostEnvironment HostingEnvironment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             var jwtSetting = Configuration.GetSection("JwtSettings");
             services.Configure<JwtSetting>(jwtSetting);
 
-            services.AddMvc(options =>
+            services.AddControllers(options =>
             {
                 if (HostingEnvironment.IsProduction())
                 {
                     options.Filters.Add<AuditLogActionFilter>(); //生产环境启用审计日志
                 }
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                //解决序列化首字母小写的问题
-                .AddJsonOptions(options => { options.SerializerSettings.ContractResolver = 
-                    new Newtonsoft.Json.Serialization.DefaultContractResolver(); }) ;
+            })
+            .AddControllersAsServices()  //通过容器创建Controller 详见：https://autofaccn.readthedocs.io/zh/latest/integration/aspnetcore.html#asp-net-core-3-0-and-generic-hosting
+            .AddNewtonsoftJson(options => //添加NewtonsoftJson作为序列化的库
+            {
+                options.SerializerSettings.ContractResolver = new DefaultContractResolver(); //默认不会修改首字母为小写的
+                //序列化首字母小写
+                //options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                options.SerializerSettings.Converters.Add(new IsoDateTimeConverter() { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" });
+            });
 
             var dbType = Configuration.GetValue<string>("DataBaseType").ToLower();
             if (dbType == DbTypeEnum.SqlServer.ToString().ToLower())
@@ -77,7 +85,7 @@ namespace QuickAdmin
                 options.ForwardedHeaders =
                     ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
-           
+
             // Configure CORS for web application
             services.AddCors(
                 options => options.AddPolicy(
@@ -99,36 +107,44 @@ namespace QuickAdmin
             //注册Swagger生成器，定义一个和多个Swagger 文档
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info
+                c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "My Demo API",
+                    Title = "QuickAdmin API",
                     Version = "v1",
-                    Contact = new Contact
+                    Contact = new OpenApiContact
                     {
                         Name = "Thomson Sun",
                         Email = string.Empty,
-                        Url = "无"
+                        Url = new Uri("http://localhost")
                     },
-                    License = new License
+                    License = new OpenApiLicense
                     {
                         Name = "MIT",
-                        Url = "无"
+                        Url = new Uri("http://localhost")
                     }
                 });
 
                 //添加Bearer类型的token验证
-                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = "Input Bearer Token",
                     Name = "Authorization",
-                    In = "header",
-                    Type = "apiKey"
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
                 });
 
-                c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
-                {
-                    {"Bearer", Enumerable.Empty<string>()}
-                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                   {
+                     new OpenApiSecurityScheme
+                     {
+                       Reference = new OpenApiReference
+                       {
+                         Type = ReferenceType.SecurityScheme,
+                         Id = "Bearer"
+                       }
+                      },
+                      new string[] { }
+                    } });
 
                 //给swagger添加注释
                 var basePath = Path.GetDirectoryName(typeof(Program).Assembly.Location);
@@ -138,11 +154,10 @@ namespace QuickAdmin
 
             //添加JWT认证
             services.AddJwtAuthentication(Configuration);
+        }
 
-
-            //添加 Autofac
-            var containerBuilder = new ContainerBuilder();
-
+        public void ConfigureContainer(ContainerBuilder containerBuilder)
+        {
             #region 注册services
             //var assemblies = AppDomain.CurrentDomain.GetAssemblies().ToArray(); Assembly.GetExecutingAssembly();
             containerBuilder.RegisterAssemblyTypes(Assembly.Load("QuickAdmin.Services"))
@@ -157,13 +172,10 @@ namespace QuickAdmin
             containerBuilder.RegisterType<CommonHelper>();
 
             #endregion
-            containerBuilder.Populate(services);
-            var container = containerBuilder.Build();
-            return new AutofacServiceProvider(container);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -192,20 +204,24 @@ namespace QuickAdmin
             //启用中间件服务对swagger-ui，指定Swagger JSON终结点
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "QuickAdmin Api V1");
             });
+
+            app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
+
+            app.UseRouting();
 
             //启用认证
             app.UseAuthentication();
 
-            app.UseHttpsRedirection();
+            //启用授权
+            app.UseAuthorization();
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/swagger");
-
+                endpoints.MapControllers();
             });
         }
     }

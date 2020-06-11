@@ -5,7 +5,7 @@ namespace QuickAdmin.Services.Interface
 {
     public interface IUserService
     {
-        Task<AddUserOutput> AddUser(AddUserInput input);
+        Task<AddUserOutput> AddUserAsync(AddUserInput input);
 
         Task<GetUserOutput> GetUserById(GetUserInput input);
     }
