@@ -21,7 +21,7 @@ namespace QuickAdmin.Common
             byte[] toEncryptArray = Encoding.UTF8.GetBytes(originData);
             RijndaelManaged rDel = new RijndaelManaged();
             rDel.Key = keyArray;
-            //对称加密和分组加密中的四种模式(ECB、CBC、CFB、OFB),这三种的区别，主要来自于密钥的长度，16位密钥 = 128位，24位密钥 = 192位，32位密钥 = 256位
+            //对称加密和分组加密中的四种模式(ECB、CBC、CFB、OFB),这几种主要的区别是密钥的长度，16位密钥 = 128位，24位密钥 = 192位，32位密钥 = 256位
             rDel.Mode = CipherMode.ECB;
             rDel.Padding = PaddingMode.PKCS7;
             ICryptoTransform cTransform = rDel.CreateEncryptor();

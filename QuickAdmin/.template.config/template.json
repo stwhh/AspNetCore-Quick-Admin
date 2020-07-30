@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json.schemastore.org/template", //template.json 文件的 JSON 架构。默认值使用http://json.schemastore.org/template
+    "author": "Thomson Sun", 
+    "classifications": [ "Web/WebAPI" ], //这个对应模板的Tags
+    "name": "ASP.Net Core 3.1 QuickAdmin", //用户看到的模板名称
+    "identity": "QuickAdminTemplate", //模板的唯一名称
+    "shortName": "qadmin", //短名称，使用 dotnet new <shortName> 安装模板时的名称
+    "tags": {
+      "language": "C#" ,
+      "type":"project"
+    },
+    "sourceName": "QuickAdmin",  // 在使用 -n 选项时，会替换模板中项目的名字,比如项目是QuickAdmin.XXX,会把QuickAdmin替换掉
+    "preferNameDirectory": true 
+}
