@@ -42,6 +42,12 @@ namespace QuickAdmin.Controllers
             _userRepository = userRepository;
         }
 
+
+        /// <summary>
+        /// 获取token
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [Route("Token")]
         [HttpPost]
         public async Task<IActionResult> Token([FromBody] LoginInput input)

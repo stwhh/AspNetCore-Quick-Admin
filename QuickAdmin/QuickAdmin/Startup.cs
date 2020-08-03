@@ -147,8 +147,7 @@ namespace QuickAdmin
                     } });
 
                 //给swagger添加注释
-                var basePath = Path.GetDirectoryName(typeof(Program).Assembly.Location);
-                var xmlPath = Path.Combine(basePath, "SwaggerDemo.xml");
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, "QuickAdmin.xml");
                 c.IncludeXmlComments(xmlPath);
             });
 

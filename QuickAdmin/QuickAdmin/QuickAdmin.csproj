@@ -6,10 +6,11 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <AssemblyName>QuickAdmin</AssemblyName>
     <RootNamespace>QuickAdmin</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\SwaggerDemo.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\QuickAdmin.xml</DocumentationFile>
     <OutputPath>bin\Debug\</OutputPath>
     <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
