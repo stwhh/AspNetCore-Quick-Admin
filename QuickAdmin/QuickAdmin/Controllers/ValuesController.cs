@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace QuickAdmin.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
