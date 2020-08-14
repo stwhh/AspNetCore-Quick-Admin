@@ -187,7 +187,7 @@ namespace QuickAdmin
             }
 
             //跨域设置
-            //app.UseCors(_defaultCorsPolicyName); // 如果限制跨域，启用这句
+            //app.UseCors(DefaultCorsPolicyName); // 如果限制跨域，启用这句
             app.UseCors(policy =>
             {
                 policy.AllowAnyOrigin(); //允许所有来源地址访问
