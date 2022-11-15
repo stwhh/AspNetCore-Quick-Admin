@@ -14,4 +14,4 @@ docker 构建镜像
 所以这里映射的docker端口也只能是这俩个，如果映射其它端口，应该还需要手动开放docker的其它端口)
 ```
 
-4.Code First 更新数据库：设置 xxx.DAO 项目为启动项目，打开 nuget 包管理器控制台，输入`update-database`生成数据库，生成的数据库连接配置在`QuickAdminDbContextDesignFactory`这个文件里，可自己修改。
+4. Code First 更新数据库：设置 xxx.DAO 项目为启动项目，打开 nuget 包管理器控制台，输入`update-database`生成数据库，生成的数据库连接配置在`QuickAdminDbContextDesignFactory`这个文件里，可自己修改。
