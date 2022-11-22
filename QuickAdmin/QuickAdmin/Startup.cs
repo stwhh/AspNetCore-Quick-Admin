@@ -68,8 +68,12 @@ namespace QuickAdmin
             }
             else if (dbType == DbTypeEnum.MySql.ToString().ToLower())
             {
-                services.AddDbContextPool<QuickAdminDbContext>(
-                    options => { options.UseMySql(Configuration.GetConnectionString("MySql")); });
+	            services.AddDbContextPool<QuickAdminDbContext>(
+		            options =>
+		            {
+			            options.UseMySql(Configuration.GetConnectionString("MySql"),
+				            ServerVersion.AutoDetect(Configuration.GetConnectionString("MySql"))); //new MySqlServerVersion(new Version(8, 0, 21))
+                    });
             }
             else if (dbType == DbTypeEnum.PgSql.ToString().ToLower())
             {
