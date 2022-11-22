@@ -76,7 +76,7 @@ namespace QuickAdmin.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("User")]
-        public async Task<IActionResult> UpdateUserAysnc(AddUserInput input)
+        public async Task<IActionResult> UpdateUserAsync(AddUserInput input)
         {
             var user = await _userRepository.GetEntityAsync(x => x.Id == input.Id);
             user.UserName = input.UserName;
@@ -90,7 +90,7 @@ namespace QuickAdmin.Controllers
         /// <returns></returns>
         [HttpDelete]
         [Route("User/{id}")]
-        public async Task<IActionResult> DeleteUserAysnc(string id)
+        public async Task<IActionResult> DeleteUserAsync(string id)
         {
             var isSuccess = _userRepository.DeleteAsync(x => x.Id == id);
             return new JsonResult(await isSuccess);

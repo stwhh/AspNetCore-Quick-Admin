@@ -9,6 +9,7 @@ namespace QuickAdmin.Common
     {
         SqlServer,
         MySql,
-        Oracle
+        Oracle,
+        PgSql
     }
 }
