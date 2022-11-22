@@ -39,7 +39,7 @@ namespace QuickAdmin.Controllers
         /// <param name="id">用户id</param>
         /// <returns></returns>
         [HttpGet]
-        [Route("User/{id}")]
+        [Route("Users/{id}")]
         public async Task<IActionResult> GetUserAsync(string id) //[FromQuery] GetUserInput input
         {
             return new JsonResult(await _userRepository.GetEntityAsync(x => x.Id == id));
@@ -63,7 +63,7 @@ namespace QuickAdmin.Controllers
         /// <param name="input">新增的用户信息参数</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("User")]
+        [Route("Users")]
         [AllowAnonymous] //todo-stwhh 正式开发时需要去掉
         public async Task<IActionResult> AddUserAsync([FromBody] AddUserInput input)
         {
@@ -75,7 +75,7 @@ namespace QuickAdmin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPut]
-        [Route("User")]
+        [Route("Users")]
         public async Task<IActionResult> UpdateUserAsync(AddUserInput input)
         {
             var user = await _userRepository.GetEntityAsync(x => x.Id == input.Id);
@@ -89,7 +89,7 @@ namespace QuickAdmin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpDelete]
-        [Route("User/{id}")]
+        [Route("Users/{id}")]
         public async Task<IActionResult> DeleteUserAsync(string id)
         {
             var isSuccess = _userRepository.DeleteAsync(x => x.Id == id);
