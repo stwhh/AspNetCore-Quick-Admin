@@ -70,8 +70,8 @@ namespace QuickAdmin.Controllers
                 new Claim("id", user.Id), //ClaimTypes.NameIdentifier
                 new Claim("name", user.UserName), //ClaimTypes.Name
                 new Claim("userNo", "0001"), //todo-stwhh 需要根据自己需要修改
-                //new Claim("role", "admin"), //
-                //new Claim("email", "admin@qq.com")
+                //new Claim(ClaimTypes.Role,"admin"), //role(首字母小写)或者ClaimTypes.Role 都可以
+                //new Claim(ClaimTypes.Email, "admin@qq.com") //email(首字母小写)或者ClaimTypes.Email 都可以
             };
 
             //对称秘钥

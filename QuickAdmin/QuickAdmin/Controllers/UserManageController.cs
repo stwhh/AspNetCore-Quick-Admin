@@ -51,6 +51,7 @@ namespace QuickAdmin.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("Users")]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> GetUsersAsync()
         {
             var users = _userRepository.GetListAsync(x => true);

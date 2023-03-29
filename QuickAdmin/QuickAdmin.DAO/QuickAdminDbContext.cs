@@ -25,5 +25,11 @@ namespace QuickAdmin.DAO
         {
             modelBuilder.Entity<User>().HasQueryFilter(p => !p.IsDeleted); //&& p.TenantId == this.TenantId
         }
+
+        public override int SaveChanges()
+        {
+            //to do,CreateTime,ModificationTime等自定义操作
+            return base.SaveChanges();
+        }
     }
 }
