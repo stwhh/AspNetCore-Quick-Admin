@@ -9,8 +9,8 @@
 
    ```
    docker 构建镜像
-   1. 转到Dockerfile文件所在目录，运行 docker build . -t qadmin 创建镜像(名称是qadmin,tag没指定，默认latest)
-   2. 根据镜像创建并运行容器 docker run -d --name quick_admin_container -p 5301:80 qadmin (注意，因为Dockerfile里面只暴露了80和443端口，
+   1. 转到Dockerfile文件所在目录，运行 `docker build . -t qadmin` 创建镜像(名称是qadmin,tag没指定，默认latest)
+   2. 根据镜像创建并运行容器 `docker run -d -p 5301:80 --name quick_admin_container qadmin` (注意，因为Dockerfile里面只暴露了80和443端口，
    所以这里映射的docker端口也只能是这俩个，如果映射其它端口，应该还需要手动开放docker的其它端口)
    ```
 
